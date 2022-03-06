@@ -1,4 +1,4 @@
-const db = require("../models");
+const db = require('../models');
 
 const getAll = () =>
   new Promise((resolve, reject) => {
@@ -18,7 +18,10 @@ const add = (userObj) =>
         resolve(users);
       })
       .catch((error) => {
-        reject(error);
+        const errorMessage = error.errors
+          .map((errorObj) => errorObj.message)
+          .join();
+        reject(errorMessage);
       });
   });
 

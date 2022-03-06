@@ -1,5 +1,6 @@
-"use strict";
-const { Model } = require("sequelize");
+'use strict';
+const { Model } = require('sequelize');
+const hashPassword = require('../utils/hashPassword');
 
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
@@ -25,13 +26,33 @@ module.exports = (sequelize, DataTypes) => {
       email: {
         type: DataTypes.STRING,
         allowNull: false,
+        validate: {
+          isEmail: true,
+        },
+        unique: true,
+      },
+      password: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          isValidPassword(value) {
+            if (value.length < 8) {
+              throw new Error('Password is too short');
+            }
+          },
+        },
       },
     },
     {
       sequelize,
-      modelName: "User",
+      modelName: 'User',
     }
   );
+
+  User.beforeCreate(async (user, options) => {
+    const hashedPassword = await hashPassword(user.password);
+    user.password = hashedPassword;
+  });
 
   return User;
 };
