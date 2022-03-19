@@ -1,6 +1,6 @@
 'use strict';
 const { Model } = require('sequelize');
-const hashPassword = require('../utils/hashPassword');
+const hashPassword = require('../utils/password').hashPassword;
 
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
@@ -11,6 +11,13 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+    }
+    toJson() {
+      return {
+        firstName: this.firstName,
+        lastName: this.lastName,
+        email: this.email,
+      };
     }
   }
 

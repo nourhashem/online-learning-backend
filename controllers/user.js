@@ -25,7 +25,26 @@ const add = (userObj) =>
       });
   });
 
+const getByEmail = (userEmail) =>
+  new Promise((resolve, reject) => {
+    db.User.findAll({
+      where: {
+        email: userEmail,
+      },
+    })
+      .then((users) => {
+        console.log({ users });
+        if (!users.length) resolve(null);
+        resolve(users[0]);
+      })
+      .catch((error) => {
+        console.log({ error });
+        reject(error);
+      });
+  });
+
 module.exports = {
   getAll,
   add,
+  getByEmail,
 };
