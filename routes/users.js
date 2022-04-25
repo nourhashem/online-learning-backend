@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var userController = require('../controllers/user');
+const { USER_ROLES } = require('../utils/constants');
 var comparePassword = require('../utils/password').comparePassword;
 
 router.get('/', async (req, res, next) => {
@@ -15,6 +16,7 @@ router.post('/signup', async (req, res, next) => {
       lastName: req.body.lastName,
       email: req.body.email,
       password: req.body.password,
+      role: USER_ROLES.STUDENT,
     });
     res.send({ message: 'success' });
   } catch (error) {

@@ -13,7 +13,6 @@ const getAll = () =>
 
 const add = (userObj) =>
   new Promise((resolve, reject) => {
-    console.log(userObj);
     db.User.create(userObj)
       .then((users) => {
         resolve(users);

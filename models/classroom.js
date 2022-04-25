@@ -1,11 +1,9 @@
 'use strict';
 const { Model } = require('sequelize');
-const hashPassword = require('../utils/password').hashPassword;
-const uuid = require('uuid');
-const { USER_ROLES } = require('../utils/constants');
+const User = require('./User');
 
 module.exports = (sequelize, DataTypes) => {
-  class User extends Model {
+  class Classroom extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -16,14 +14,20 @@ module.exports = (sequelize, DataTypes) => {
     }
     toJson() {
       return {
-        firstName: this.firstName,
-        lastName: this.lastName,
-        email: this.email,
+        name: this.name,
+        fullName: this.fullName,
+        semester: this.semester,
+        instructor: this.instructor,
+        section: this.section,
+        campus: this.campus,
+        time: this.time,
+        uuid: this.uuid,
+        posts: this.posts,
       };
     }
   }
 
-  User.init(
+  Classroom.init(
     {
       uuid: {
         type: DataTypes.UUID,
@@ -31,50 +35,42 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         primaryKey: true,
       },
-      role: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-          isIn: [Object.values(USER_ROLES)],
-        },
-      },
-      firstName: {
+      name: {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      lastName: {
-        type: DataTypes.STRING,
-      },
-      email: {
+      fullName: {
         type: DataTypes.STRING,
         allowNull: false,
-        validate: {
-          isEmail: true,
-        },
-        unique: true,
       },
-      password: {
+      semester: {
         type: DataTypes.STRING,
         allowNull: false,
-        validate: {
-          isValidPassword(value) {
-            if (value.length < 8) {
-              throw new Error('Password is too short');
-            }
-          },
-        },
+      },
+      time: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      section: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      campus: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      posts: {
+        type: DataTypes.STRING,
+        allowNull: false,
       },
     },
     {
       sequelize,
-      modelName: 'User',
+      modelName: 'Classroom',
     }
   );
 
-  User.beforeCreate(async (user, options) => {
-    const hashedPassword = await hashPassword(user.password);
-    user.password = hashedPassword;
-  });
+  Classroom.beforeCreate(async (classroom, options) => {});
 
-  return User;
+  return Classroom;
 };
