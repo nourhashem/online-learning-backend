@@ -1,6 +1,7 @@
 'use strict';
 const { Model } = require('sequelize');
 const hashPassword = require('../utils/password').hashPassword;
+const uuid = require('uuid');
 
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
@@ -23,6 +24,9 @@ module.exports = (sequelize, DataTypes) => {
 
   User.init(
     {
+      uuid: {
+        type: DataTypes.STRING,
+      },
       firstName: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -59,6 +63,8 @@ module.exports = (sequelize, DataTypes) => {
   User.beforeCreate(async (user, options) => {
     const hashedPassword = await hashPassword(user.password);
     user.password = hashedPassword;
+    const userUuid = uuid.v4();
+    user.uuid = userUuid;
   });
 
   return User;

@@ -13,15 +13,20 @@ const getAll = () =>
 
 const add = (userObj) =>
   new Promise((resolve, reject) => {
+    console.log(userObj);
     db.User.create(userObj)
       .then((users) => {
         resolve(users);
       })
       .catch((error) => {
-        const errorMessage = error.errors
-          .map((errorObj) => errorObj.message)
-          .join();
-        reject(errorMessage);
+        if (error && error.errors) {
+          const errorMessage = error.errors
+            .map((errorObj) => errorObj.message)
+            .join();
+          reject(errorMessage);
+        } else {
+          reject('User creation failed');
+        }
       });
   });
 
