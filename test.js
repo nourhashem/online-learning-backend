@@ -8,7 +8,7 @@ const addPost = (userUuid, classroomUuid) => {
     body: 'my body',
     date: new Date().toISOString(),
     ownerUuid: userUuid,
-    classroomUuid: classroomUuid,
+    // classroomUuid: classroomUuid,
   });
 };
 
@@ -17,7 +17,7 @@ const getPost = async () => {
   return post[0];
 };
 
-// addPost('b51482db-1168-4db8-a592-db6b72e74dcc', 'classUuid');
+// addPost('df40ce6c-5737-4083-9313-3386a5e0027f', 'classUuid');
 getPost().then((post) => {
   console.log(post);
   post.getOwner().then((owner) => {

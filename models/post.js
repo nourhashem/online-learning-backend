@@ -13,24 +13,28 @@ module.exports = (sequelize, DataTypes) => {
       Post.owner = models.User.hasMany(models.Post, {
         foreignKey: {
           name: 'ownerUuid',
-          as: 'owner',
           type: DataTypes.UUID,
         },
+        as: 'owner',
       });
       models.Post.belongsTo(models.User, {
-        foreignKey: 'ownerUuid',
+        foreignKey: {
+          name: 'ownerUuid',
+        },
         as: 'owner',
       });
 
       Post.classroom = models.Classroom.hasMany(models.Post, {
         foreignKey: {
           name: 'classroomUuid',
-          as: 'classroom',
           type: DataTypes.UUID,
         },
+        as: 'classroom',
       });
       models.Post.belongsTo(models.Classroom, {
-        foreignKey: 'classroomUuid',
+        foreignKey: {
+          name: 'classroomUuid',
+        },
         as: 'classroom',
       });
     }
