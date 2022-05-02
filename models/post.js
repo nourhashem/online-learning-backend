@@ -1,6 +1,5 @@
 'use strict';
 const { Model } = require('sequelize');
-const uuid = require('uuid');
 
 module.exports = (sequelize, DataTypes) => {
   class Post extends Model {
@@ -11,10 +10,32 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Post.owner = models.User.hasMany(models.Post, {
+        foreignKey: {
+          name: 'ownerUuid',
+          as: 'owner',
+          type: DataTypes.UUID,
+        },
+      });
+      models.Post.belongsTo(models.User, {
+        foreignKey: 'ownerUuid',
+        as: 'owner',
+      });
+
+      Post.classroom = models.Classroom.hasMany(models.Post, {
+        foreignKey: {
+          name: 'classroomUuid',
+          as: 'classroom',
+          type: DataTypes.UUID,
+        },
+      });
+      models.Post.belongsTo(models.Classroom, {
+        foreignKey: 'classroomUuid',
+        as: 'classroom',
+      });
     }
     toJson() {
       return {
-        owner: this.owner,
         title: this.title,
         body: this.body,
         date: this.date,
@@ -30,10 +51,6 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: DataTypes.UUIDV4,
         allowNull: false,
         primaryKey: true,
-      },
-      owner: {
-        type: DataTypes.STRING,
-        allowNull: false,
       },
       title: {
         type: DataTypes.STRING,
