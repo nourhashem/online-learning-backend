@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
           name: 'ownerUuid',
           type: DataTypes.UUID,
         },
-        as: 'owner',
+        as: 'posts',
       });
       models.Post.belongsTo(models.User, {
         foreignKey: {
@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
           name: 'classroomUuid',
           type: DataTypes.UUID,
         },
-        as: 'classroom',
+        as: 'posts',
       });
       models.Post.belongsTo(models.Classroom, {
         foreignKey: {

@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       Classroom.students = models.Classroom.belongsToMany(models.User, {
         through: 'students_classrooms',
         foreignKey: 'classroomUuid',
+        as: 'students',
       });
     }
     toJson() {
@@ -25,7 +26,6 @@ module.exports = (sequelize, DataTypes) => {
         campus: this.campus,
         time: this.time,
         uuid: this.uuid,
-        posts: this.posts,
       };
     }
   }
@@ -59,10 +59,6 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
       campus: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      posts: {
         type: DataTypes.STRING,
         allowNull: false,
       },

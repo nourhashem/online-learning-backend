@@ -16,6 +16,7 @@ module.exports = (sequelize, DataTypes) => {
       User.studentClasses = models.User.belongsToMany(models.Classroom, {
         through: 'students_classrooms',
         foreignKey: 'studentUuid',
+        as: 'studentClasses',
       });
     }
     toJson() {
