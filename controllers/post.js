@@ -27,9 +27,31 @@ const add = (postObj) =>
       });
   });
 
-const getAll = () =>
+const getAll = (classroomUuid) =>
   new Promise((resolve, reject) => {
-    db.Post.findAll()
+    db.Post.findAll({
+      where: {
+        classroomUuid: classroomUuid,
+      },
+    })
+      .then((posts) => resolve(posts))
+      .catch((error) => reject(error));
+  });
+
+const getByUuid = (postUuid) =>
+  new Promise((resolve, reject) => {
+    db.Post.findByPk(postUuid)
+      .then((posts) => resolve(posts))
+      .catch((error) => reject(error));
+  });
+
+const remove = (postUuid) =>
+  new Promise((resolve, reject) => {
+    db.Post.destroy({
+      where: {
+        uuid: postUuid,
+      },
+    })
       .then((posts) => resolve(posts))
       .catch((error) => reject(error));
   });
@@ -37,4 +59,6 @@ const getAll = () =>
 module.exports = {
   add,
   getAll,
+  remove,
+  getByUuid,
 };

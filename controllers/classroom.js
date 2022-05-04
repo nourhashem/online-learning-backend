@@ -3,7 +3,10 @@ const db = require('../models');
 const add = (classroomObj) =>
   new Promise((resolve, reject) => {
     db.Classroom.create(classroomObj, {
-      include: [db.Classroom.students],
+      include: [
+        db.Classroom.students,
+        { association: db.Classroom.instructor },
+      ],
     })
       .then((classrooms) => {
         resolve(classrooms);

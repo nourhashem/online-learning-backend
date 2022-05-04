@@ -3,54 +3,102 @@ const userController = require('./controllers/user');
 const postController = require('./controllers/post');
 const classroomController = require('./controllers/classroom');
 
-const addPost = (userUuid, classroomUuid) => {
-  postController.add({
-    title: 'My title',
-    body: 'my body',
-    date: new Date().toISOString(),
-    ownerUuid: userUuid,
-    classroomUuid: classroomUuid,
-  });
-};
+const main = async (add) => {
+  // CREATING
+  try {
+    const student = await userController.add({
+      firstName: 'Nour',
+      lastName: 'Hashem',
+      email: 'nour@gmail.com',
+      password: '12345678',
+      role: 'student',
+    });
 
-const addClassroom = () => {
-  classroomController
-    .add({
+    const student2 = await userController.add({
+      firstName: 'Ahmad',
+      lastName: 'Nassar',
+      email: 'ahmad@gmail.com',
+      password: '12345678',
+      role: 'student',
+    });
+
+    const instructor = await userController.add({
+      firstName: 'Ibrahim',
+      lastName: 'Ismail',
+      email: 'ibrahim@gmail.com',
+      password: '12345678',
+      role: 'instructor',
+    });
+
+    const classroom = await classroomController.add({
       name: 'CENG685',
       fullName: 'Information Security',
       semester: 'fall 2023-2024',
       time: 'TTh 4:00-5:00',
       section: 'A',
       campus: 'Bekaa',
-    })
-    .catch((error) => console.log('error', error));
+      instructorUuid: instructor.uuid,
+    });
+
+    const classroom2 = await classroomController.add({
+      name: 'CENG420',
+      fullName: 'Web Programming',
+      semester: 'fall 2023-2024',
+      time: 'TTh 2:00-3:00',
+      section: 'B',
+      campus: 'Bekaa',
+      instructorUuid: instructor.uuid,
+    });
+
+    const post = await postController.add({
+      title: 'My title',
+      body: 'my body',
+      date: new Date().toISOString(),
+      ownerUuid: student.uuid,
+      classroomUuid: classroom.uuid,
+    });
+
+    // READING
+    const myStudent = await db.User.findByPk(student.uuid);
+    const myStudent2 = await db.User.findByPk(student2.uuid);
+    const myInstructor = await db.User.findByPk(instructor.uuid);
+    const myClassroom = await db.Classroom.findByPk(classroom.uuid);
+    const myClassroom2 = await db.Classroom.findByPk(classroom2.uuid);
+    const myPost = await db.Post.findByPk(post.uuid);
+
+    const studentPosts = await myStudent.getPosts();
+    console.log('studentPosts', studentPosts);
+
+    const postOwner = await myPost.getOwner();
+    console.log('postOwner', postOwner);
+
+    const postClassroom = await myPost.getClassroom();
+    console.log('postClassroom', postClassroom);
+
+    const classroomInstructor = await myClassroom.getInstructor();
+    console.log('classroomInstructor', classroomInstructor);
+
+    const classroomPosts = await myClassroom.getPosts();
+    console.log('classroomPosts', classroomPosts);
+
+    const instructorClassrooms = await myInstructor.getInstructorClassrooms();
+    console.log('instructorClassrooms', instructorClassrooms);
+
+    //REGISTRING STUDENT IN CLASSROOM
+    await myClassroom.addStudents([myStudent, myStudent2]);
+    await myClassroom2.addStudents([myStudent, myStudent2]);
+
+    const studentClassrooms = await myStudent.getStudentClassrooms();
+    console.log('studentClassrooms', studentClassrooms);
+
+    const classroomStudents = await myClassroom.getStudents();
+    console.log('classroomStudents', classroomStudents);
+  } catch (error) {
+    console.log('error: ', error);
+  }
 };
 
-const getPost = async () => {
-  const post = await postController.getAll();
-  return post[0];
-};
+main();
 
-// addPost(
-//   '43e2fbb9-094b-41c5-942a-21a69a54e02e',
-//   'd3e290fe-1cce-42c9-b0cb-9f69e04872c9'
-// );
-
-// getPost().then((post) => {
-//   console.log(post);
-//   post.getOwner().then((owner) => {
-//     console.log(owner.email);
-//   });
-// });
-
-// userController.getAll().then((users) => {
-//   const user = users[0];
-//   user.getPosts().then(console.log);
-// });
-
-// addClassroom();
-
-classroomController.getAll().then((classrooms) => {
-  const classroom = classrooms[0];
-  classroom.getPosts().then(console.log);
-});
+// const secret = require('crypto').randomBytes(64).toString('hex');
+// console.log(secret);

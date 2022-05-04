@@ -1,6 +1,6 @@
 const USER_ROLES = {
   STUDENT: 'student',
-  TEACHER: 'teacher',
+  INSTRUCTOR: 'instructor',
   ADMIN: 'admin',
 };
 

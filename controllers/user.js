@@ -43,8 +43,16 @@ const getAll = () =>
       .catch((error) => reject(errors));
   });
 
+const getByUuid = (userUuid) =>
+  new Promise((resolve, reject) => {
+    db.User.findByPk(userUuid)
+      .then((posts) => resolve(posts))
+      .catch((error) => reject(error));
+  });
+
 module.exports = {
   getAll,
   add,
   getByEmail,
+  getByUuid,
 };

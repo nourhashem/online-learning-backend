@@ -13,10 +13,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      User.studentClasses = models.User.belongsToMany(models.Classroom, {
+      User.studentClassrooms = models.User.belongsToMany(models.Classroom, {
         through: 'students_classrooms',
         foreignKey: 'studentUuid',
-        as: 'studentClasses',
+        as: 'studentClassrooms',
       });
     }
     toJson() {
