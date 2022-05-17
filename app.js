@@ -1,15 +1,28 @@
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var cors = require('cors');
+const express = require('express');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const cors = require('cors');
+const socket = require('./socket');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var postsRouter = require('./routes/posts');
-var classroomsRouter = require('./routes/classrooms');
+const indexRouter = require('./routes/index');
+const usersRouter = require('./routes/users');
+const postsRouter = require('./routes/posts');
+const classroomsRouter = require('./routes/classrooms');
 
-var app = express();
+const app = express();
+
+const httpServer = require('http').createServer(app);
+const options = {
+  serveClient: false,
+  path: '/socket',
+  cors: {
+    origin: 'http://localhost:3000',
+  },
+  transports: ['websocket'],
+};
+const io = require('socket.io')(httpServer, options);
+global.io = io;
+socket.init();
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -22,4 +35,4 @@ app.use('/users', usersRouter);
 app.use('/posts', postsRouter);
 app.use('/classrooms', classroomsRouter);
 
-module.exports = app;
+module.exports = httpServer;
