@@ -1,3 +1,4 @@
+const { Op } = require('sequelize');
 const db = require('../models');
 
 const add = (userObj) =>
@@ -50,9 +51,28 @@ const getByUuid = (userUuid) =>
       .catch((error) => reject(error));
   });
 
+const getByEmails = (userEmails) =>
+  new Promise((resolve, reject) => {
+    db.User.findAll({
+      where: {
+        email: {
+          [Op.or]: userEmails,
+        },
+      },
+    })
+      .then((users) => {
+        resolve(users);
+      })
+      .catch((error) => {
+        console.log({ error });
+        reject(error);
+      });
+  });
+
 module.exports = {
   getAll,
   add,
   getByEmail,
   getByUuid,
+  getByEmails,
 };

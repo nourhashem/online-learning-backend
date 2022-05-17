@@ -32,13 +32,13 @@ module.exports = (sequelize, DataTypes) => {
     }
     toJson() {
       return {
-        name: this.name,
-        fullName: this.fullName,
+        title: this.title,
+        code: this.code,
         semester: this.semester,
         instructor: this.instructor,
         section: this.section,
         campus: this.campus,
-        time: this.time,
+        schedule: this.schedule,
         uuid: this.uuid,
       };
     }
@@ -52,11 +52,11 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         primaryKey: true,
       },
-      name: {
+      title: {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      fullName: {
+      code: {
         type: DataTypes.STRING,
         allowNull: false,
       },
@@ -64,7 +64,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      time: {
+      schedule: {
         type: DataTypes.STRING,
         allowNull: false,
       },

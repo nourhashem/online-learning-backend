@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var classroomController = require('../controllers/post');
+var classroomController = require('../controllers/classroom');
 var userController = require('../controllers/user');
 const classroom = require('../models/classroom');
 const { USER_ROLES } = require('../utils/constants');
@@ -25,6 +25,27 @@ router.get('/', authToken, async (req, res, next) => {
     response.push(jsonClassroom);
   }
   res.send({ classrooms: response });
+});
+
+router.post('/', authToken, async (req, res, next) => {
+  try {
+    const myClassroom = await classroomController.add({
+      code: req.body.code,
+      semester: req.body.semester,
+      schedule: req.body.schedule,
+      campus: req.body.campus,
+      section: req.body.section,
+      title: req.body.title,
+      instructorUuid: req.body.instructorUuid,
+    });
+    const studentsObj = await userController.getByEmails(
+      req.body.studentsEmailsArray
+    );
+    myClassroom.addStudents(studentsObj);
+    res.send({ message: 'success' });
+  } catch (error) {
+    res.send({ error });
+  }
 });
 
 module.exports = router;
