@@ -1,0 +1,6 @@
+module.exports = {
+  SEND_MESSAGE: 'sendMessage',
+  MESSAGE: 'message',
+  CONNECTION: 'connection',
+  DISCONNECT: 'disconnect',
+};
