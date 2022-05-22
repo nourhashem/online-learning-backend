@@ -7,6 +7,7 @@ const socket = require('./socket');
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const postsRouter = require('./routes/posts');
+const messagesRouter = require('./routes/messages');
 const classroomsRouter = require('./routes/classrooms');
 
 const app = express();
@@ -34,5 +35,6 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/posts', postsRouter);
 app.use('/classrooms', classroomsRouter);
+app.use('/messages', messagesRouter);
 
 module.exports = httpServer;

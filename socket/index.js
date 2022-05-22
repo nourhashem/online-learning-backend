@@ -1,21 +1,24 @@
 const users = require('./users');
 const userController = require('../controllers/user');
+const messageController = require('../controllers/message');
 const { USER_ROLES } = require('../utils/constants');
 const events = require('./events');
 
 const init = () => {
   io.on(events.CONNECTION, (socket) => {
     const userUuid = socket.handshake.query.userUuid;
-    if (userUuid) {
+    if (userUuid && userUuid !== 'null') {
       joinRooms(socket, userUuid);
       users.add(userUuid, socket.id);
     } else {
+      console.log('received null userUuid disconnecting', socket.id);
       socket.disconnect();
     }
 
     socket.on(events.SEND_MESSAGE, (data) => {
       console.log('received SEND_MESSAGE', data);
       io.to(data.classroomUuid).emit(events.MESSAGE, data);
+      messageController.add(data);
     });
 
     socket.on(events.DISCONNECT, () => {

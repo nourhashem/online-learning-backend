@@ -2,6 +2,7 @@ const db = require('./models');
 const userController = require('./controllers/user');
 const postController = require('./controllers/post');
 const classroomController = require('./controllers/classroom');
+const messageController = require('./controllers/message');
 
 const main = async (add) => {
   // CREATING
@@ -58,15 +59,34 @@ const main = async (add) => {
     //   classroomUuid: classroom.uuid,
     // });
 
+    // const msg = {
+    //   uuid: '16a5312-ff6-661f-e851-42b261b75072',
+    //   message: 'hi',
+    //   owner: 'Ibrahim Ismail',
+    //   classroomUuid: 'd26e1de0-d878-43a8-9300-709f5809215b',
+    //   ownerUuid: '977082b8-8ae4-49e8-a4af-c61b52df7920',
+    //   timestamp: 1653134157446,
+    //   date: '2022-05-21T11:55:57.446Z',
+    // };
+    // const message = await messageController.add(msg);
+
+    const messages = await messageController.getAll(
+      'd26e1de0-d878-43a8-9300-709f5809215b',
+      { offset: 3, limit: 3 }
+    );
+
+    console.log('messages:', messages.length);
+    console.log(messages);
+
     // // READING
 
-    const students = await userController.getByEmails([
-      'ahmad@gmail.com',
-      'nour@gmail.com',
-      'ibrahim@gmail.com',
-    ]);
+    // const students = await userController.getByEmails([
+    //   'ahmad@gmail.com',
+    //   'nour@gmail.com',
+    //   'ibrahim@gmail.com',
+    // ]);
 
-    console.log('students', students);
+    // console.log('students', students);
     // const myStudent = await db.User.findByPk(student.uuid);
     // const myStudent2 = await db.User.findByPk(student2.uuid);
     // const myInstructor = await db.User.findByPk(instructor.uuid);
