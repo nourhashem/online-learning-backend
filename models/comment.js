@@ -2,7 +2,7 @@
 const { Model } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
-  class Post extends Model {
+  class Comment extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -10,37 +10,37 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Post.owner = models.User.hasMany(models.Post, {
+      Comment.owner = models.User.hasMany(models.Comment, {
         foreignKey: {
           name: 'ownerUuid',
           type: DataTypes.UUID,
         },
-        as: 'posts',
+        as: 'comments',
       });
-      models.Post.belongsTo(models.User, {
+      models.Comment.belongsTo(models.User, {
         foreignKey: {
           name: 'ownerUuid',
         },
         as: 'owner',
       });
 
-      Post.classroom = models.Classroom.hasMany(models.Post, {
+      Comment.post = models.Post.hasMany(models.Comment, {
         foreignKey: {
-          name: 'classroomUuid',
+          name: 'postUuid',
           type: DataTypes.UUID,
         },
-        as: 'posts',
+        as: 'comments',
       });
-      models.Post.belongsTo(models.Classroom, {
+      models.Comment.belongsTo(models.Post, {
         foreignKey: {
-          name: 'classroomUuid',
+          name: 'postUuid',
         },
-        as: 'classroom',
+        as: 'post',
       });
     }
   }
 
-  Post.init(
+  Comment.init(
     {
       uuid: {
         type: DataTypes.UUID,
@@ -48,11 +48,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         primaryKey: true,
       },
-      title: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      body: {
+      comment: {
         type: DataTypes.STRING,
         allowNull: false,
       },
@@ -60,12 +56,16 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      timestamp: {
+        type: DataTypes.BIGINT,
+        allowNull: false,
+      },
     },
     {
       sequelize,
-      modelName: 'Post',
+      modelName: 'Comment',
     }
   );
 
-  return Post;
+  return Comment;
 };

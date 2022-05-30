@@ -7,29 +7,29 @@ const messageController = require('./controllers/message');
 const main = async (add) => {
   // CREATING
   try {
-    // const student = await userController.add({
-    //   firstName: 'Nour',
-    //   lastName: 'Hashem',
-    //   email: 'nour@gmail.com',
-    //   password: '12345678',
-    //   role: 'student',
-    // });
+    const student = await userController.add({
+      firstName: 'Nour',
+      lastName: 'Hashem',
+      email: 'nour@gmail.com',
+      password: '12345678',
+      role: 'student',
+    });
 
-    // const student2 = await userController.add({
-    //   firstName: 'Ahmad',
-    //   lastName: 'Nassar',
-    //   email: 'ahmad@gmail.com',
-    //   password: '12345678',
-    //   role: 'student',
-    // });
+    const student2 = await userController.add({
+      firstName: 'Fatima',
+      lastName: 'Melhem',
+      email: 'fatima@gmail.com',
+      password: '12345678',
+      role: 'student',
+    });
 
-    // const instructor = await userController.add({
-    //   firstName: 'Ibrahim',
-    //   lastName: 'Ismail',
-    //   email: 'ibrahim@gmail.com',
-    //   password: '12345678',
-    //   role: 'instructor',
-    // });
+    const instructor = await userController.add({
+      firstName: 'Ali',
+      lastName: 'Bazzi',
+      email: 'ali@gmail.com',
+      password: '12345678',
+      role: 'instructor',
+    });
 
     // const classroom = await classroomController.add({
     //   code: 'CENG685',
@@ -70,13 +70,13 @@ const main = async (add) => {
     // };
     // const message = await messageController.add(msg);
 
-    const messages = await messageController.getAll(
-      'd26e1de0-d878-43a8-9300-709f5809215b',
-      { offset: 3, limit: 3 }
-    );
+    // const messages = await messageController.getAll(
+    //   'd26e1de0-d878-43a8-9300-709f5809215b',
+    //   { offset: 3, limit: 3 }
+    // );
 
-    console.log('messages:', messages.length);
-    console.log(messages);
+    // console.log('messages:', messages.length);
+    // console.log(messages);
 
     // // READING
 

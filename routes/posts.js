@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var postController = require('../controllers/post');
+var commentController = require('../controllers/comment');
 const { authToken } = require('../utils/jwt');
 
 router.get('/', authToken, async (req, res, next) => {
@@ -18,6 +19,21 @@ router.get('/', authToken, async (req, res, next) => {
   res.send({ posts: response });
 });
 
+router.get('/:postUuid', authToken, async (req, res, next) => {
+  try {
+    const postUuid = req.params.postUuid;
+    const post = await postController.getByUuid(postUuid);
+    const owner = await post.getOwner();
+    const ownerName = `${owner.firstName} ${owner.lastName}`;
+    const jsonPost = post.toJSON();
+    jsonPost.owner = ownerName;
+    res.send({ post: jsonPost });
+  } catch (error) {
+    console.log(error);
+    res.send({ error: 'cant get post' });
+  }
+});
+
 router.post('/', authToken, async (req, res, next) => {
   try {
     await postController.add({
@@ -26,6 +42,22 @@ router.post('/', authToken, async (req, res, next) => {
       date: new Date().toISOString(),
       ownerUuid: req.userUuid,
       classroomUuid: req.body.classroomUuid,
+    });
+    res.send({ message: 'success' });
+  } catch (error) {
+    res.send({ error });
+  }
+});
+
+router.post('/comment', authToken, async (req, res, next) => {
+  try {
+    console.log(req.body);
+    await commentController.add({
+      comment: req.body.comment,
+      date: new Date().toISOString(),
+      timestamp: Date.now(),
+      ownerUuid: req.userUuid,
+      postUuid: req.body.postUuid,
     });
     res.send({ message: 'success' });
   } catch (error) {

@@ -33,6 +33,16 @@ const getAll = (classroomUuid) =>
       where: {
         classroomUuid: classroomUuid,
       },
+      include: [
+        {
+          model: db.Comment,
+          as: 'comments',
+          include: {
+            model: db.User,
+            as: 'owner',
+          },
+        },
+      ],
     })
       .then((posts) => resolve(posts))
       .catch((error) => reject(error));
@@ -40,7 +50,18 @@ const getAll = (classroomUuid) =>
 
 const getByUuid = (postUuid) =>
   new Promise((resolve, reject) => {
-    db.Post.findByPk(postUuid)
+    db.Post.findByPk(postUuid, {
+      include: [
+        {
+          model: db.Comment,
+          as: 'comments',
+          include: {
+            model: db.User,
+            as: 'owner',
+          },
+        },
+      ],
+    })
       .then((posts) => resolve(posts))
       .catch((error) => reject(error));
   });
