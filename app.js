@@ -9,17 +9,18 @@ const usersRouter = require('./routes/users');
 const postsRouter = require('./routes/posts');
 const messagesRouter = require('./routes/messages');
 const classroomsRouter = require('./routes/classrooms');
+const deliverablesRouter = require('./routes/deliverables');
 
 const app = express();
 
 const httpServer = require('http').createServer(app);
 const options = {
-  serveClient: false,
-  path: '/socket',
-  cors: {
-    origin: 'http://localhost:3000',
-  },
-  transports: ['websocket'],
+	serveClient: false,
+	path: '/socket',
+	cors: {
+		origin: 'http://localhost:3000',
+	},
+	transports: ['websocket'],
 };
 const io = require('socket.io')(httpServer, options);
 global.io = io;
@@ -36,5 +37,6 @@ app.use('/users', usersRouter);
 app.use('/posts', postsRouter);
 app.use('/classrooms', classroomsRouter);
 app.use('/messages', messagesRouter);
+app.use('/deliverables', deliverablesRouter);
 
 module.exports = httpServer;
