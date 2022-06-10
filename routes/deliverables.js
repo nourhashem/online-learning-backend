@@ -24,8 +24,34 @@ router.get('/', authToken, async (req, res, next) => {
 });
 
 router.get('/:deliverableUuid', authToken, async (req, res, next) => {
+	const answers = req.query.answers === 'true';
 	const deliverableUuid = req.params.deliverableUuid;
-	res.send({ post: jsonPost });
+	const deliverable = await deliverableController.getByUuid(deliverableUuid);
+	let deliverableData = deliverable.dataValues;
+	if (!answers) {
+		const questions = deliverableData.questions.map((q) => {
+			const { answer, choices, ...withoutAnswer } = q.dataValues;
+			return { ...withoutAnswer, choices: JSON.parse(choices) };
+		});
+		deliverableData = {
+			...deliverableData,
+			questions,
+		};
+	} else {
+		const questions = deliverableData.questions.map((q) => {
+			const { answer, choices, ...withoutAnswer } = q.dataValues;
+			return {
+				...withoutAnswer,
+				answer: JSON.parse(answer),
+				choices: JSON.parse(choices),
+			};
+		});
+		deliverableData = {
+			...deliverableData,
+			questions,
+		};
+	}
+	res.send({ deliverable: deliverableData });
 });
 
 router.post('/', authToken, async (req, res, next) => {
