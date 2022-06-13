@@ -50,6 +50,10 @@ module.exports = (sequelize, DataTypes) => {
 				type: DataTypes.STRING,
 				allowNull: false,
 			},
+			correct: {
+				type: DataTypes.BOOLEAN,
+				allowNull: true,
+			},
 		},
 		{
 			sequelize,

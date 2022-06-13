@@ -30,7 +30,8 @@ router.get('/:deliverableUuid', authToken, async (req, res, next) => {
 	let deliverableData = deliverable.dataValues;
 	if (!answers) {
 		const questions = deliverableData.questions.map((q) => {
-			const { answer, choices, ...withoutAnswer } = q.dataValues;
+			const { answer, choices, correct, attemptUuid, ...withoutAnswer } =
+				q.dataValues;
 			return { ...withoutAnswer, choices: JSON.parse(choices) };
 		});
 		deliverableData = {
@@ -39,7 +40,8 @@ router.get('/:deliverableUuid', authToken, async (req, res, next) => {
 		};
 	} else {
 		const questions = deliverableData.questions.map((q) => {
-			const { answer, choices, ...withoutAnswer } = q.dataValues;
+			const { answer, choices, correct, attemptUuid, ...withoutAnswer } =
+				q.dataValues;
 			return {
 				...withoutAnswer,
 				answer: JSON.parse(answer),
@@ -62,6 +64,7 @@ router.post('/', authToken, async (req, res, next) => {
 				...q,
 				choices: JSON.stringify(q.choices),
 				answer: JSON.stringify(q.answer),
+				correct: true,
 			})),
 			...req.body.data.metadata,
 		};
@@ -71,10 +74,6 @@ router.post('/', authToken, async (req, res, next) => {
 	} catch (error) {
 		res.send({ error });
 	}
-});
-
-router.post('/submit', authToken, async (req, res, next) => {
-	// @TODO create Attempt model
 });
 
 module.exports = router;

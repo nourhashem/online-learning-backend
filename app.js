@@ -10,6 +10,7 @@ const postsRouter = require('./routes/posts');
 const messagesRouter = require('./routes/messages');
 const classroomsRouter = require('./routes/classrooms');
 const deliverablesRouter = require('./routes/deliverables');
+const attemptsRouter = require('./routes/attempts');
 
 const app = express();
 
@@ -38,5 +39,6 @@ app.use('/posts', postsRouter);
 app.use('/classrooms', classroomsRouter);
 app.use('/messages', messagesRouter);
 app.use('/deliverables', deliverablesRouter);
+app.use('/attempts', attemptsRouter);
 
 module.exports = httpServer;

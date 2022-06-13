@@ -56,8 +56,45 @@ const getByUuid = (deliverableUuid) =>
 			.catch((error) => reject(error));
 	});
 
+const checkAnswer = (studentAnswer, answers) => {
+	const myAnswer = answers.find((a) => a.uuid === studentAnswer.uuid);
+	if (myAnswer) {
+		const answer = { ...myAnswer, answer: JSON.parse(myAnswer.answer) };
+		if (answer.type === 'multiple') {
+			let correct = true;
+			for (let j = 0; j < choices.length; j++) {
+				if (answer.answer[j] !== studentAnswer.answer[j]) {
+					correct = false;
+					return false;
+				}
+			}
+			if (correct) return true;
+		} else if (answer.answer === studentAnswer.answer) {
+			return true;
+		}
+		return false;
+	} else {
+		return false;
+	}
+};
+
+const calculateGrade = (studentAnswers, answers) => {
+	console.log('calculateGrade');
+	const numTotal = answers.length;
+	let numCorrect = 0;
+	for (let i = 0; i < studentAnswers.length; i++) {
+		const studentAnswer = studentAnswers[i];
+		if (studentAnswer.correct) numCorrect += 1;
+	}
+	const grade = (numCorrect / numTotal) * 100;
+	console.log({ numTotal, numCorrect, grade });
+	return grade;
+};
+
 module.exports = {
 	add,
 	getAll,
 	getByUuid,
+	checkAnswer,
+	calculateGrade,
 };
