@@ -75,8 +75,36 @@ const getByUuid = (attemptUuid) =>
 			.catch((error) => reject(error));
 	});
 
+const exists = (studentUuid, deliverableUuid) =>
+	new Promise(async (resolve, reject) => {
+		try {
+			const attempt = await db.Attempt.findOne({
+				where: { studentUuid, deliverableUuid },
+			});
+			if (attempt === null) resolve(false);
+			else resolve(true);
+		} catch (error) {
+			reject(error);
+		}
+	});
+
+const getStudentGrade = (studentUuid, deliverableUuid) =>
+	new Promise(async (resolve, reject) => {
+		try {
+			const attempt = await db.Attempt.findOne({
+				where: { studentUuid, deliverableUuid },
+			});
+			if (attempt === null) resolve(0);
+			else resolve(attempt.grade);
+		} catch (error) {
+			reject(error);
+		}
+	});
+
 module.exports = {
 	add,
 	getAll,
 	getByUuid,
+	exists,
+	getStudentGrade,
 };

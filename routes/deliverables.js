@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var deliverableController = require('../controllers/deliverable');
-// var attemptController = require('../controllers/attempt');
+var attemptController = require('../controllers/attempt');
 const { authToken } = require('../utils/jwt');
 
 router.get('/', authToken, async (req, res, next) => {
@@ -12,14 +12,21 @@ router.get('/', authToken, async (req, res, next) => {
 		const deliverableJSON = deliverables[i].dataValues;
 		deliverablesJSON.push(deliverableJSON);
 	}
-	const response = deliverablesJSON.map((d) => ({
-		...d,
-		questions: d.questions.map((q) => ({
-			...q.dataValues,
-			answer: '',
-			choices: JSON.parse(q.dataValues.choices),
-		})),
-	}));
+	const response = await Promise.all(
+		deliverablesJSON.map(async (d) => ({
+			...d,
+			attempted: await attemptController.exists(req.userUuid, d.uuid),
+			grade: await attemptController.getStudentGrade(
+				req.userUuid,
+				d.uuid
+			),
+			questions: d.questions.map((q) => ({
+				...q.dataValues,
+				answer: '',
+				choices: JSON.parse(q.dataValues.choices),
+			})),
+		}))
+	);
 	res.send({ deliverables: response });
 });
 
@@ -66,10 +73,21 @@ router.post('/', authToken, async (req, res, next) => {
 				answer: JSON.stringify(q.answer),
 				correct: true,
 			})),
+			published: false,
 			...req.body.data.metadata,
 		};
 		console.log(deliverableObj);
 		await deliverableController.add(deliverableObj);
+		res.send({ message: 'success' });
+	} catch (error) {
+		res.send({ error });
+	}
+});
+
+router.post('/publish', authToken, async (req, res, next) => {
+	try {
+		const { deliverableUuid } = req.body;
+		await deliverableController.publish(deliverableUuid);
 		res.send({ message: 'success' });
 	} catch (error) {
 		res.send({ error });
