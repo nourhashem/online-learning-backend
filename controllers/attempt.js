@@ -30,7 +30,7 @@ const add = (attemptObj) =>
 
 const getAll = (deliverableUuid) =>
 	new Promise((resolve, reject) => {
-		db.Deliverable.findAll({
+		db.Attempt.findAll({
 			where: {
 				deliverableUuid: deliverableUuid,
 			},
@@ -101,10 +101,37 @@ const getStudentGrade = (studentUuid, deliverableUuid) =>
 		}
 	});
 
+const getStudentAttempt = (studentUuid, deliverableUuid) =>
+	new Promise(async (resolve, reject) => {
+		try {
+			const attempt = await db.Attempt.findOne({
+				where: { studentUuid, deliverableUuid },
+				include: [
+					{
+						model: db.Question,
+						as: 'questions',
+					},
+					{
+						model: db.Deliverable,
+						as: 'deliverable',
+					},
+					{
+						model: db.User,
+						as: 'student',
+					},
+				],
+			});
+			resolve(attempt);
+		} catch (error) {
+			reject(error);
+		}
+	});
+
 module.exports = {
 	add,
 	getAll,
 	getByUuid,
 	exists,
 	getStudentGrade,
+	getStudentAttempt,
 };
