@@ -1,5 +1,6 @@
 const db = require('../models');
 const attemptController = require('./attempt');
+const userController = require('./user');
 
 const add = (deliverableObj) =>
 	new Promise((resolve, reject) => {
@@ -107,6 +108,7 @@ const publish = (deliverableUuid) =>
 const getStudentReport = (studentUuid, classroomUuid) =>
 	new Promise(async (resolve, reject) => {
 		try {
+			const student = await userController.getByUuid(studentUuid);
 			const deliverables = await getAll(classroomUuid);
 			const result = [];
 			for (let i = 0; i < deliverables.length; i++) {
@@ -119,7 +121,7 @@ const getStudentReport = (studentUuid, classroomUuid) =>
 				deliverable.attempted = !!attempt;
 				result.push(deliverable);
 			}
-			resolve(result);
+			resolve({ student, deliverables: result });
 		} catch (error) {
 			reject(error);
 		}

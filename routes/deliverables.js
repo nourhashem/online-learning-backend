@@ -68,7 +68,7 @@ router.get('/report', authToken, async (req, res, next) => {
 			studentUuid,
 			classroomUuid
 		);
-		res.send({ report });
+		res.send(report);
 	} catch (error) {
 		res.send({ error });
 	}
