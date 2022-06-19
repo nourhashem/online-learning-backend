@@ -30,6 +30,50 @@ router.get('/', authToken, async (req, res, next) => {
 	res.send({ deliverables: response });
 });
 
+router.post('/', authToken, async (req, res, next) => {
+	try {
+		const deliverableObj = {
+			classroomUuid: req.body.classroomUuid,
+			questions: req.body.data.questions.map((q) => ({
+				...q,
+				choices: JSON.stringify(q.choices),
+				answer: JSON.stringify(q.answer),
+				correct: true,
+			})),
+			published: false,
+			...req.body.data.metadata,
+		};
+		console.log(deliverableObj);
+		await deliverableController.add(deliverableObj);
+		res.send({ message: 'success' });
+	} catch (error) {
+		res.send({ error });
+	}
+});
+
+router.post('/publish', authToken, async (req, res, next) => {
+	try {
+		const { deliverableUuid } = req.body;
+		await deliverableController.publish(deliverableUuid);
+		res.send({ message: 'success' });
+	} catch (error) {
+		res.send({ error });
+	}
+});
+
+router.get('/report', authToken, async (req, res, next) => {
+	try {
+		const { studentUuid, classroomUuid } = req.query;
+		const report = await deliverableController.getStudentReport(
+			studentUuid,
+			classroomUuid
+		);
+		res.send({ report });
+	} catch (error) {
+		res.send({ error });
+	}
+});
+
 router.get('/:deliverableUuid', authToken, async (req, res, next) => {
 	const answers = req.query.answers === 'true';
 	const deliverableUuid = req.params.deliverableUuid;
@@ -61,37 +105,6 @@ router.get('/:deliverableUuid', authToken, async (req, res, next) => {
 		};
 	}
 	res.send({ deliverable: deliverableData });
-});
-
-router.post('/', authToken, async (req, res, next) => {
-	try {
-		const deliverableObj = {
-			classroomUuid: req.body.classroomUuid,
-			questions: req.body.data.questions.map((q) => ({
-				...q,
-				choices: JSON.stringify(q.choices),
-				answer: JSON.stringify(q.answer),
-				correct: true,
-			})),
-			published: false,
-			...req.body.data.metadata,
-		};
-		console.log(deliverableObj);
-		await deliverableController.add(deliverableObj);
-		res.send({ message: 'success' });
-	} catch (error) {
-		res.send({ error });
-	}
-});
-
-router.post('/publish', authToken, async (req, res, next) => {
-	try {
-		const { deliverableUuid } = req.body;
-		await deliverableController.publish(deliverableUuid);
-		res.send({ message: 'success' });
-	} catch (error) {
-		res.send({ error });
-	}
 });
 
 module.exports = router;

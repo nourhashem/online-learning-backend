@@ -1,4 +1,5 @@
 const db = require('../models');
+const attemptController = require('./attempt');
 
 const add = (deliverableObj) =>
 	new Promise((resolve, reject) => {
@@ -103,6 +104,27 @@ const publish = (deliverableUuid) =>
 			.catch(reject);
 	});
 
+const getStudentReport = (studentUuid, classroomUuid) =>
+	new Promise(async (resolve, reject) => {
+		try {
+			const deliverables = await getAll(classroomUuid);
+			const result = [];
+			for (let i = 0; i < deliverables.length; i++) {
+				const deliverable = deliverables[i].dataValues;
+				const attempt = await attemptController.getStudentAttempt(
+					studentUuid,
+					deliverable.uuid
+				);
+				deliverable.attempt = attempt ? attempt.dataValues : {};
+				deliverable.attempted = !!attempt;
+				result.push(deliverable);
+			}
+			resolve(result);
+		} catch (error) {
+			reject(error);
+		}
+	});
+
 module.exports = {
 	add,
 	getAll,
@@ -110,4 +132,5 @@ module.exports = {
 	checkAnswer,
 	calculateGrade,
 	publish,
+	getStudentReport,
 };
